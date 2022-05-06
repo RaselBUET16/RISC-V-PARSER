@@ -1,6 +1,7 @@
+# THIS IS A COMMENT
 add a0, x0, x1
-la a1, hello
-li a3, 5
+la a1, hello #INLINE COMMENT IGNORE IT
+li a3,                      5     
 addi a2, x0, 5
 subi a7, x0, 64.5
-edall
+ecall

@@ -1,0 +1,6 @@
+add a0 , x0 , x1 valid
+la a1 , hello valid
+li a3 , 5 valid
+addi a2 , x0 , 5 valid
+subi a7 , x0 , 64.5 invalid
+ecall valid

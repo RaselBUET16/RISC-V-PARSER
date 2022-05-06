@@ -1,4 +1,3 @@
-#include "Tokenizer.hpp"
 #include "InstructionSet.hpp"
 #include<iostream>
 
@@ -13,8 +12,9 @@ void printVector(vector<Token> tokens)
 }
 int main( int argc, char* argv[] )
 {
-    FILE *fp = fopen(argv[0], "r");
-    if(fp == NULL)
+    FILE *fpIN = fopen("INPUTFILE.txt", "r");
+    FILE *fpOUT=fopen("OUTPUTFILE.txt", "w");
+    if(fpIN == NULL)
     {
         cout<<"File not found"<<endl;
         return 0;
@@ -24,12 +24,15 @@ int main( int argc, char* argv[] )
     Tokenizer tokenizer;
     vector<Token> tokens;
     InstructionSet instructionSet;
-    while (fgets(line, sizeof(line), fp))
+    while (fgets(line, sizeof(line), fpIN))
     {
         //tokenize line
         tokens=tokenizer.parse(line);
         //add to instruction set
         instructionSet.addInstruction(tokens);
     }
-    instructionSet.printInstructionSet();
+    instructionSet.printInstructionSet(fpOUT);
+    fclose(fpIN);
+    fclose(fpOUT);
+    return 0;
 }
