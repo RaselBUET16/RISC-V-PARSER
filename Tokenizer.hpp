@@ -9,12 +9,8 @@ enum TokenType
 {
     WHITESPACE, // No token ever has this type.
     IDENTIFIER,
-    ERROR,
     INTEGER_LITERAL,
     STRING_LITERAL,
-    OPERATOR,
-    STRING_ESCAPE_SEQUENCE,
-    POTENTIAL_COMMENT,
     COMMENT,
     COMMA,
     REGISTER
@@ -23,12 +19,8 @@ enum TokenType
 static const char *sTokenTypeStrings[] = {
     "WHITESPACE",
     "IDENTIFIER",
-    "ERROR",
     "INTEGER_LITERAL",
     "STRING_LITERAL",
-    "OPERATOR",
-    "STRING_ESCAPE_SEQUENCE",
-    "POTENTIAL_COMMENT",
     "COMMENT",
     "COMMA",
     "REGISTER"};
@@ -127,7 +119,7 @@ public:
                 }
                 else if (currentToken.tType == INTEGER_LITERAL)
                 {
-                    currentToken.tType=ERROR;
+                    currentToken.tType = STRING_LITERAL;
                     currentToken.text.append(1, currCh);
                 }
                 else
@@ -151,10 +143,46 @@ private:
             // cout << "Ignoring comment " << token.mText << endl;
             tokens.push_back(token);
         }
-        else if(token.tType==IDENTIFIER && token.text.size() ==2 && (token.text[0] == 'a' || token.text[0]== 'x') && (token.text[1] >= '0' && token.text[1] <= '9'))
+        else if (token.tType == IDENTIFIER)
         {
-            token.tType = REGISTER;
-            tokens.push_back(token);
+            if (token.text == "sp" || token.text == "ra" || token.text == "gp" || token.text == "tp")
+            {
+                token.tType = REGISTER;
+                tokens.push_back(token);
+            }
+            else if (token.text.size() == 2)
+            {
+                if ((token.text[0] == 's' && token.text[1] >= '0' && token.text[1] <= '9') || (token.text[0] == 't' && token.text[1] >= '0' && token.text[1] <= '6') || (token.text[0] == 'a' && token.text[1] >= '0' && token.text[1] <= '7') || (token.text[0] == 'x' && token.text[1] >= '0' && token.text[1] <= '9'))
+                {
+                    token.tType = REGISTER;
+                    tokens.push_back(token);
+                }
+                else
+                {
+                    tokens.push_back(token);
+                }
+            }
+            else if (token.text.size() == 3)
+            {
+                if (token.text[0] == 's' && token.text[1] == '1' && (token.text[2] == 0 || token.text[2] == '1'))
+                {
+                    token.tType = REGISTER;
+                    tokens.push_back(token);
+                }
+                else if (token.text[0] == 'x' && 
+                (((token.text[1] == '1' || token.text[1] == '2') && (token.text[2] >= '0' && token.text[2] <= '9')) || (token.text[1] == '3' && (token.text[2] == '0' || token.text[2] == '1'))))
+                {
+                    token.tType = REGISTER;
+                    tokens.push_back(token);
+                }
+                else
+                {
+                    tokens.push_back(token);
+                }
+            }
+            else{
+                tokens.push_back(token);
+            }
         }
         else if (token.tType != WHITESPACE)
         {
